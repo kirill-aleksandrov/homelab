@@ -1,0 +1,53 @@
+#jinja2:lstrip_blocks: True
+// This config is based on alpine /etc/bind/named.conf.recursive
+
+options {
+	directory "/var/bind";
+
+	allow-recursion {
+		127.0.0.1/32;
+		{{ allow_recursion }};
+	};
+
+	forwarders {
+	{% for forwarder in forwarders %}
+		{{ forwarder }};
+	{% endfor %}
+	};
+
+	listen-on {
+		127.0.0.1;
+		{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }};
+	};
+	listen-on-v6 { none; };
+
+	pid-file "/var/run/named/named.pid";
+
+	allow-transfer { none; };
+};
+
+zone "." IN {
+	type hint;
+	file "named.ca";
+};
+
+zone "localhost" IN {
+	type master;
+	file "pri/localhost.zone";
+	allow-update { none; };
+	notify no;
+};
+
+zone "127.in-addr.arpa" IN {
+	type master;
+	file "pri/127.zone";
+	allow-update { none; };
+	notify no;
+};
+
+include "/etc/bind/{{ zone }}-tsig.conf.key";
+zone "{{ zone }}" IN {
+	type master;
+	file "dyn/{{ zone }}.zone";
+	update-policy { grant {{ zone }}-tsig-key zonesub any; };
+};

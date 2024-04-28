@@ -1,0 +1,11 @@
+$TTL 1H
+@       IN      SOA     ns.{{ zone }}. {{ zone }}. (
+                        202404281   ; serial
+                        5M          ; refresh
+                        5M          ; retry
+                        1H          ; expire
+                        5M )        ; minimum
+
+                NS      ns
+
+ns              A       {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}

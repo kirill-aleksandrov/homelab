@@ -1,0 +1,28 @@
+#cloud-config
+autoinstall:
+  version: 1
+  refresh-installer:
+    update: yes
+  ssh:
+    install-server: true
+    allow-pw: true
+  source:
+    id: ubuntu-server-minimal
+  packages:
+    - qemu-guest-agent
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+  updates: all
+  user-data:
+    package_upgrade: false
+    timezone: Europe/Berlin
+    users:
+      - name: packer
+        groups: [adm, sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        passwd: '$6$rounds=4096$14ewcQM8P7ksKUjH$YH2DNArbRMY99BXz/g.7CSdll3SsZx9vqO0UDS1MjxLAYcPwunkQ/AwxBTwAM6spKV17op2OL9f0SYASYsN9e0'

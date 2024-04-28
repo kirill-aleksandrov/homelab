@@ -1,0 +1,7 @@
+allow_recursion: '192.168.0.0/16'
+
+forwarders:
+  - '8.8.8.8'
+  - '8.8.4.4'
+
+zone: homelab

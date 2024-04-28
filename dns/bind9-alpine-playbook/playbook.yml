@@ -1,0 +1,4 @@
+- name: Setup bind9
+  hosts: all
+  roles:
+    - bind

@@ -1,0 +1,42 @@
+- name: Install bind
+  community.general.apk:
+    name: bind
+    state: present
+
+- name: Render named.conf
+  ansible.builtin.template:
+    src: named.conf.j2
+    dest: /etc/bind/named.conf
+    mode: '644'
+
+- name: Check that the zone tsig key exists
+  ansible.builtin.stat:
+    path: /etc/bind/{{ zone }}-tsig.conf.key
+  register: tsig_key_stat
+
+- name: Generate the zone tsig key
+  ansible.builtin.command: tsig-keygen {{ zone }}-tsig-key
+  register: tsig_key
+  when: not tsig_key_stat.stat.exists
+  changed_when: false
+
+- name: Write the zone tsig key to file
+  ansible.builtin.copy:
+    content: "{{ tsig_key.stdout }}\n"
+    dest: /etc/bind/{{ zone }}-tsig.conf.key
+    mode: '600'
+    owner: named
+    group: named
+  when: tsig_key is not ansible.builtin.skipped
+
+- name: Render the zone file
+  ansible.builtin.template:
+    src: zone.j2
+    dest: /var/bind/dyn/{{ zone }}.zone
+    mode: '644'
+
+- name: Enable and restart the service
+  ansible.builtin.service:
+    name: named
+    enabled: true
+    state: restarted

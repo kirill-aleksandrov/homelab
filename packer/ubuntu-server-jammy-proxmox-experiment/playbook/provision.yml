@@ -1,0 +1,39 @@
+- name: Wait for cloud-init to finish
+  hosts: default
+  tasks:
+    - name: Wait for cloud-init to finish
+      ansible.builtin.wait_for:
+        path: /var/lib/cloud/instance/boot-finished
+
+- name: Prepare the VM for Cloud-Init interation in Proxmox
+  hosts: default
+  become: true
+  roles:
+    - prepare_cloud_init
+
+- name: Remove ssh host keys
+  hosts: default
+  become: true
+  roles:
+    - remove_ssh_host_keys
+
+- name: Apt clean up
+  hosts: default
+  become: true
+  roles:
+    - apt_cleanup
+
+- name: Remove packer user
+  hosts: default
+  become: true
+  tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        var: ansible_user
+
+    - name: Remove packer user
+      ansible.builtin.user:
+        name: '{{ ansible_user }}'
+        state: absent
+        force: true
+        remove: true
