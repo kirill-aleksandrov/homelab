@@ -21,6 +21,7 @@ variable "zone" {
 
 variable "ttl" {
   type = number
+  default = 300
 }
 
 variable "domains" {
