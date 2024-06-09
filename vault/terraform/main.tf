@@ -1,7 +1,9 @@
-resource "proxmox_virtual_environment_file" "cloud_config" {
+resource "proxmox_virtual_environment_file" "ubuntu_cloud_config" {
+  count = 3
+
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = "node1"
+  node_name    = var.vm_nodes[count.index]
 
   source_raw {
     data = <<EOF
@@ -27,30 +29,34 @@ EOF
 }
 
 
-resource "proxmox_virtual_environment_download_file" "vault_ubuntu_noble" {
+resource "proxmox_virtual_environment_download_file" "vault_ubuntu_image" {
+  count = 3
+
   content_type = "iso"
-  datastore_id = "local"
-  node_name    = "node1"
-  file_name    = "vault-noble-server-cloudimg-amd64.img"
-  url          = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  datastore_id = var.vm_image_datastore_id
+  node_name    = var.vm_nodes[count.index]
+  file_name    = "vault-ubuntu-server-cloudimg-amd64.img"
+  url          = var.vm_ubuntu_image_url
 }
 
 resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
-  name = "vault"
-  tags = ["ubuntu", "noble", "vault"]
+  count = length(var.vm_nodes)
 
-  node_name = var.vm_node_name
-  vm_id     = var.vm_id
+  name = "vault"
+  tags = ["ubuntu", "vault"]
+
+  node_name = var.vm_nodes[count.index]
+  vm_id     = var.vm_start_id + count.index
 
   agent {
     enabled = true
   }
 
   disk {
-    datastore_id = var.vm_datastore_id
-    file_id      = proxmox_virtual_environment_download_file.vault_ubuntu_noble.id
+    datastore_id = "local-lvm"
+    file_id      = proxmox_virtual_environment_download_file.vault_ubuntu_image[count.index].id
     interface    = "scsi0"
-    size         = 8
+    size         = 20
     ssd          = true
     discard      = "on"
   }
@@ -58,12 +64,16 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   initialization {
     ip_config {
       ipv4 {
-        address = var.vm_ipv4_address
-        gateway = var.vm_ipv4_gateway
+        address = "172.18.1.${count.index + 1}/12"
+        gateway = "172.16.0.1"
       }
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+    dns {
+      servers = ["172.16.0.2", "172.16.0.1"]
+    }
+
+    user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_config[count.index].id
   }
 
   network_device {
@@ -78,7 +88,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   bios    = "ovmf"
 
   efi_disk {
-    datastore_id = var.vm_datastore_id
+    datastore_id = "local-lvm"
     file_format  = "raw"
   }
 
@@ -91,10 +101,18 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 }
 
-resource "dns_a_record_set" "a_record" {
+resource "dns_a_record_set" "node_record" {
+  count = 3
+
+  zone      = var.dns_zone
+  name      = "${var.vm_nodes[count.index]}.vault"
+  addresses = ["172.18.1.${count.index + 1}"]
+  ttl       = var.dns_ttl
+}
+
+resource "dns_a_record_set" "vip_record" {
   zone      = var.dns_zone
   name      = "vault"
-  // strip subnet mask from vm_ipv4_address
-  addresses = [replace(var.vm_ipv4_address, "/\\/\\d{1,2}$/", "")]
+  addresses = ["172.18.1.254"]
   ttl       = var.dns_ttl
 }

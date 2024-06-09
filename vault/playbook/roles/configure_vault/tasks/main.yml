@@ -1,0 +1,21 @@
+- name: Copy certs
+  ansible.builtin.copy:
+    src: '{{ inventory_dir }}/certs/{{ item }}'
+    dest: '/opt/vault/tls/{{ item }}'
+    owner: vault
+    group: vault
+    mode: '0600'
+  with_items:
+    - ca.crt
+    - raft.key
+    - raft.crt
+    - tls.key
+    - tls.crt
+
+- name: Render the Vault config
+  ansible.builtin.template:
+    src: vault.hcl.j2
+    dest: /etc/vault.d/vault.hcl
+    mode: '0644'
+    owner: vault
+    group: vault

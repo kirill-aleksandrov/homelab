@@ -1,0 +1,27 @@
+ui           = true
+api_addr     = "https://{{ ansible_host }}:8200"
+cluster_addr = "https://{{ ansible_host }}:8201"
+
+storage "raft" {
+  path    = "/opt/vault/data"
+{% if raft_node_id is defined %}
+  node_id = "{{ raft_node_id }}"
+{% endif %}
+{% for host in groups['vault'] if host != inventory_hostname %}
+
+  retry_join {
+    leader_api_addr         = "https://{{ hostvars[host]['ansible_host'] }}:8200"
+    leader_ca_cert_file     = "/opt/vault/tls/ca.crt"
+    leader_client_cert_file = "/opt/vault/tls/raft.crt"
+    leader_client_key_file  = "/opt/vault/tls/raft.key"
+  }
+{% endfor %}
+}
+
+listener "tcp" {
+  address            = "{{ ansible_host }}:8200"
+  cluster_address    = "{{ ansible_host }}:8201"
+  tls_cert_file      = "/opt/vault/tls/tls.crt"
+  tls_key_file       = "/opt/vault/tls/tls.key"
+  tls_client_ca_file = "/opt/vault/tls/ca.crt"
+}

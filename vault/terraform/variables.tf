@@ -42,6 +42,10 @@ variable "dns_ttl" {
   default = 300
 }
 
+variable "vm_ubuntu_image_url" {
+  type = string
+}
+
 variable "vm_username" {
   type = string
 }
@@ -50,11 +54,11 @@ variable "vm_password_hash" {
   type = string
 }
 
-variable "vm_node_name" {
-  type = string
+variable "vm_nodes" {
+  type = list(string)
 }
 
-variable "vm_id" {
+variable "vm_start_id" {
   type = number
 }
 
@@ -62,10 +66,10 @@ variable "vm_datastore_id" {
   type = string
 }
 
-variable "vm_ipv4_address" {
+variable "vm_image_datastore_id" {
   type = string
 }
 
-variable "vm_ipv4_gateway" {
+variable "vm_cnippet_datastore_id" {
   type = string
 }

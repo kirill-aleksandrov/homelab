@@ -1,0 +1,21 @@
+- name: Install keepalived
+  ansible.builtin.apt:
+    name: keepalived
+    update_cache: true
+
+- name: Generate keepalived password
+  ansible.builtin.set_fact:
+    keepalived_password: "{{ lookup('ansible.builtin.password', '/dev/null', length=8) }}"
+  when: inventory_hostname == groups['proxy'][0]
+
+- name: Render keepalived config
+  ansible.builtin.template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    mode: '600'
+
+- name: Start and enable keepalived service
+  ansible.builtin.service:
+    name: keepalived
+    state: restarted
+    enabled: true

@@ -1,0 +1,5 @@
+- name: Start and enable Vault service
+  ansible.builtin.service:
+    name: vault
+    state: restarted
+    enabled: true

@@ -1,0 +1,29 @@
+- name: Check that the somefile.conf exists
+  ansible.builtin.stat:
+    path: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  register: keyring_stat
+
+- name: Get the armored keyring
+  ansible.builtin.uri:
+    url: https://apt.releases.hashicorp.com/gpg
+    return_content: true
+  register: armored_keyring
+  when: not keyring_stat.stat.exists
+
+- name: Dearmor the keyring
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    stdin: "{{ armored_keyring.content }}"
+    creates: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  when: not keyring_stat.stat.exists
+
+- name: Add the HashiCorp repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch=amd64 signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg]
+      https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
+
+- name: Install Vault
+  ansible.builtin.apt:
+    name: vault
+    update_cache: true

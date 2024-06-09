@@ -1,0 +1,13 @@
+vrrp_instance {{ inventory_hostname }} {
+    state {{ 'MASTER' if inventory_hostname == groups['proxy'][0] else 'BACKUP' }}
+    interface {{ ansible_default_ipv4.interface }}
+    virtual_router_id 1
+    virtual_ipaddress {
+        {{ vip_address }}
+    }
+    priority {{ 255 - groups['proxy'].index(inventory_hostname) }}
+    authentication {
+        auth_type AH
+        auth_pass {{ hostvars[groups['proxy'][0]]['keepalived_password'] }}
+    }
+}

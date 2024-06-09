@@ -1,0 +1,39 @@
+- name: Install vault
+  become: true
+  hosts: vault
+  roles:
+    - install_vault
+  tags:
+    - vault
+
+- name: Configure vault
+  become: true
+  hosts: vault
+  roles:
+    - configure_vault
+  tags:
+    - vault
+
+- name: Start and enable Vault service
+  become: true
+  hosts: vault
+  roles:
+    - start_vault_service
+  tags:
+    - vault
+
+- name: Setup HAProxy
+  become: true
+  hosts: proxy
+  roles:
+    - setup_haproxy
+  tags:
+    - haproxy
+
+- name: Setup keepalived
+  become: true
+  hosts: proxy
+  roles:
+    - setup_keepalived
+  tags:
+    - keepalived
