@@ -1,9 +1,7 @@
 resource "proxmox_virtual_environment_file" "ubuntu_cloud_config" {
-  count = 3
-
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = var.vm_nodes[count.index]
+  node_name    = "node1"
 
   source_raw {
     data = <<EOF
@@ -22,31 +20,27 @@ packages:
   - qemu-guest-agent
 runcmd:
   - systemctl enable --now qemu-guest-agent
+  - vgcreate openebs-lvm /dev/vdb
 EOF
 
-    file_name = "ubuntu-vault-cloud-config.yaml"
+    file_name = "ubuntu-lvm-test-cloud-config.yaml"
   }
 }
 
-
-resource "proxmox_virtual_environment_download_file" "vault_ubuntu_image" {
-  count = 3
-
+resource "proxmox_virtual_environment_download_file" "ubuntu_image" {
   content_type = "iso"
-  datastore_id = var.vm_image_datastore_id
-  node_name    = var.vm_nodes[count.index]
-  file_name    = "vault-ubuntu-server-cloudimg-amd64.img"
+  datastore_id = "local"
+  node_name    = "node1"
+  file_name    = "lvm-test-ubuntu-server-cloudimg-amd64.img"
   url          = var.vm_ubuntu_image_url
 }
 
-resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
-  count = length(var.vm_nodes)
+resource "proxmox_virtual_environment_vm" "lvm-test" {
+  name = "lvm-test"
+  tags = ["ubuntu", "lvm-test"]
 
-  name = "vault"
-  tags = ["ubuntu", "vault"]
-
-  node_name = var.vm_nodes[count.index]
-  vm_id     = var.vm_start_id + count.index
+  node_name = "node1"
+  vm_id     = 666
 
   agent {
     enabled = true
@@ -54,17 +48,24 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.vault_ubuntu_image[count.index].id
+    file_id      = proxmox_virtual_environment_download_file.ubuntu_image.id
     interface    = "virtio0"
     size         = 20
-    ssd          = true
+    discard      = "on"
+  }
+
+  disk {
+    datastore_id = "sata"
+    file_format  = "raw"
+    interface    = "virtio1"
+    size         = 20
     discard      = "on"
   }
 
   initialization {
     ip_config {
       ipv4 {
-        address = "172.18.1.${count.index + 1}/12"
+        address = "172.27.1.1/12"
         gateway = "172.16.0.1"
       }
     }
@@ -73,7 +74,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
       servers = ["172.16.0.2", "172.16.0.1"]
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_config[count.index].id
+    user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_config.id
   }
 
   network_device {
@@ -97,22 +98,13 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
     type  = "x86-64-v3"
   }
   memory {
-    dedicated = 1024
+    dedicated = 2048
   }
 }
 
-resource "dns_a_record_set" "node_record" {
-  count = 3
-
+resource "dns_a_record_set" "control_record" {
   zone      = var.dns_zone
-  name      = "${var.vm_nodes[count.index]}.vault"
-  addresses = ["172.18.1.${count.index + 1}"]
-  ttl       = var.dns_ttl
-}
-
-resource "dns_a_record_set" "vip_record" {
-  zone      = var.dns_zone
-  name      = "vault"
-  addresses = ["172.18.1.254"]
+  name      = "lvm-test"
+  addresses = ["172.27.1.1"]
   ttl       = var.dns_ttl
 }
