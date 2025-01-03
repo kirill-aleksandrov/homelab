@@ -1,0 +1,47 @@
+extras:
+  manifests:
+    - apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: vault-issuer
+
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      metadata:
+        name: vault-issuer
+      rules:
+        - apiGroups: ['']
+          resources: ['serviceaccounts/token']
+          resourceNames: ['vault-issuer']
+          verbs: ['create']
+
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      metadata:
+        name: vault-issuer
+      subjects:
+        - kind: ServiceAccount
+          name: cert-manager
+          namespace: cert-manager
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: Role
+        name: vault-issuer
+
+    - apiVersion: cert-manager.io/v1
+      kind: Issuer
+      metadata:
+        name: vault-issuer
+      spec:
+        vault:
+          path: homelab-int-ca/sign/cert-manager-kubernetes-dashboard
+          server: https://vault.homelab
+          caBundle: {{ requiredEnv "ROOT_CA" }}
+          auth:
+            kubernetes:
+              role: kubernetes-dashboard
+              mountPath: /v1/auth/kubernetes-cert-manager
+              serviceAccountRef:
+                name: vault-issuer
+                audiences: [https://kubernetes.default.svc.kubernetes.homelab]
+

@@ -5,6 +5,7 @@
     - install_vault
   tags:
     - vault
+    - install
 
 - name: Configure vault
   become: true
@@ -13,6 +14,7 @@
     - configure_vault
   tags:
     - vault
+    - configure
 
 - name: Start and enable Vault service
   become: true
@@ -21,6 +23,7 @@
     - start_vault_service
   tags:
     - vault
+    - start_service
 
 - name: Setup HAProxy
   become: true

@@ -60,7 +60,6 @@ resource "proxmox_virtual_environment_vm" "control_ubuntu_vm" {
     file_id      = proxmox_virtual_environment_download_file.ubuntu_image[count.index].id
     interface    = "virtio0"
     size         = 20
-    ssd          = true
     discard      = "on"
   }
 
@@ -73,7 +72,7 @@ resource "proxmox_virtual_environment_vm" "control_ubuntu_vm" {
     }
 
     dns {
-      servers = ["172.16.0.2", "172.16.0.1"]
+      servers = ["172.16.0.2" ]
     }
 
     user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_control_config[count.index].id
@@ -122,7 +121,6 @@ resource "proxmox_virtual_environment_vm" "node_ubuntu_vm" {
     file_id      = proxmox_virtual_environment_download_file.ubuntu_image[count.index].id
     interface    = "virtio0"
     size         = 60
-    ssd          = true
     discard      = "on"
   }
 
@@ -143,7 +141,7 @@ resource "proxmox_virtual_environment_vm" "node_ubuntu_vm" {
     }
 
     dns {
-      servers = ["172.16.0.2", "172.16.0.1"]
+      servers = ["172.16.0.2"]
     }
 
     user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_node_config[count.index].id
@@ -178,7 +176,7 @@ resource "dns_a_record_set" "control_record" {
   count = 3
 
   zone      = var.dns_zone
-  name      = "node${count.index + 1}.control.kubernetes"
+  name      = "control-node${count.index + 1}.kubernetes"
   addresses = ["172.20.1.${count.index + 1}"]
   ttl       = var.dns_ttl
 }
@@ -187,7 +185,14 @@ resource "dns_a_record_set" "node_record" {
   count = 3
 
   zone      = var.dns_zone
-  name      = "node${count.index + 1}.node.kubernetes"
+  name      = "worker-node${count.index + 1}.kubernetes"
   addresses = ["172.20.2.${count.index + 1}"]
+  ttl       = var.dns_ttl
+}
+
+resource "dns_a_record_set" "apiserver_record" {
+  zone      = var.dns_zone
+  name      = "lb-apiserver.kubernetes"
+  addresses = ["172.20.254.1"]
   ttl       = var.dns_ttl
 }
