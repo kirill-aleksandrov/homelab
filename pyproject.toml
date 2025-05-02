@@ -2,14 +2,14 @@
 name = "homelab"
 version = "0.1.0"
 description = ""
-authors = ["Kirill Aleksandrov <aleksandrov.k.v@yandex.ru>"]
+authors = ["Kirill Aleksandrov <kirill.aleks.swe@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
-ansible = "9.5.1"
-docker = "7.0.0"
+ansible = "11.5.0"
 
 [tool.poetry.group.dev.dependencies]
-ansible-lint = { version = "24.2.3", markers = 'platform_system != "Windows"' }
+ansible-lint = "25.4.0"
 
