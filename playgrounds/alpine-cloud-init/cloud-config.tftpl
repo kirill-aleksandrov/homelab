@@ -1,0 +1,18 @@
+#cloud-config
+ssh_pwauth: true
+users:
+  - default
+  - name: ${username}
+    lock_passwd: false
+    passwd: ${password_hash}
+    doas: [permit nopass ${username} as root]
+manage_resolv_conf: true
+resolv_conf:
+  nameservers:
+    - 172.16.0.2
+    - 172.16.0.1
+packages:
+  - qemu-guest-agent
+runcmd:
+  - rc-service qemu-guest-agent start
+  - rc-update add qemu-guest-agent
