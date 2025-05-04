@@ -15,7 +15,7 @@ openssl req \
 openssl x509 \
     -req \
     -sha512 \
-    -days 3650 \
+    -days 1825 \
     -in INT-CA-CSR.pem \
     -out INT-CA.pem \
     -CA "../root-ca/ROOT-CA.pem" \
