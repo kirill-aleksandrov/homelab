@@ -40,13 +40,14 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_image" {
   node_name    = "node${count.index + 1}"
   file_name    = "kubernetes-ubuntu-server-cloudimg-amd64.img"
   url          = var.vm_ubuntu_image_url
+  overwrite    = false
 }
 
 resource "proxmox_virtual_environment_vm" "control_ubuntu_vm" {
   count = 3
 
   name = "kubernetes-control"
-  tags = ["ubuntu", "kubernetes"]
+  tags = ["ubuntu", "kubernetes", "control-plane"]
 
   node_name = "node${count.index + 1}"
   vm_id     = var.vm_control_start_id + count.index
@@ -72,7 +73,7 @@ resource "proxmox_virtual_environment_vm" "control_ubuntu_vm" {
     }
 
     dns {
-      servers = ["172.16.0.2" ]
+      servers = ["172.16.0.2"]
     }
 
     user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_control_config[count.index].id
@@ -107,7 +108,7 @@ resource "proxmox_virtual_environment_vm" "node_ubuntu_vm" {
   count = 3
 
   name = "kubernetes-node"
-  tags = ["ubuntu", "kubernetes"]
+  tags = ["ubuntu", "kubernetes", "worker"]
 
   node_name = "node${count.index + 1}"
   vm_id     = var.vm_node_start_id + count.index
