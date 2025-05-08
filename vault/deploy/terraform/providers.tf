@@ -2,11 +2,11 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.58.1"
+      version = "0.77.0"
     }
     dns = {
       source  = "hashicorp/dns"
-      version = "3.4.1"
+      version = "3.4.3"
     }
   }
 }

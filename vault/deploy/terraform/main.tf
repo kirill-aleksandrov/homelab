@@ -6,25 +6,11 @@ resource "proxmox_virtual_environment_file" "ubuntu_cloud_config" {
   node_name    = var.vm_nodes[count.index]
 
   source_raw {
-    data = <<EOF
-#cloud-config
-ssh_pwauth: true
-users:
-  - default
-  - name: ${var.vm_username}
-    shell: /bin/bash
-    lock_passwd: false
-    groups:
-      - sudo
-    passwd: ${var.vm_password_hash}
-    sudo: ALL=(ALL) NOPASSWD:ALL
-packages:
-  - qemu-guest-agent
-runcmd:
-  - systemctl enable --now qemu-guest-agent
-EOF
-
-    file_name = "ubuntu-vault-cloud-config.yaml"
+    data = templatefile("${path.module}/cloud-config.tftpl", {
+      username : var.vm_username,
+      password_hash : var.vm_password_hash
+    })
+    file_name = "vault-ubuntu-cloud-config.yaml"
   }
 }
 
@@ -37,6 +23,7 @@ resource "proxmox_virtual_environment_download_file" "vault_ubuntu_image" {
   node_name    = var.vm_nodes[count.index]
   file_name    = "vault-ubuntu-server-cloudimg-amd64.img"
   url          = var.vm_ubuntu_image_url
+  overwrite    = false
 }
 
 resource "proxmox_virtual_environment_vm" "ubuntu_vm" {

@@ -25,3 +25,5 @@ listener "tcp" {
   tls_key_file       = "/opt/vault/tls/tls.key"
   tls_client_ca_file = "/opt/vault/tls/ca.crt"
 }
+
+log_level = "{{ vault_server_log_level }}"
