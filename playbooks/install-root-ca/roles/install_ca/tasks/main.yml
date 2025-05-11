@@ -1,0 +1,12 @@
+- name: Copy certificates to the local CA certificates directory
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /usr/local/share/ca-certificates
+    owner: root
+    group: root
+    mode: "0644"
+  with_fileglob: "{{ inventory_dir }}/certs/*.crt"
+
+- name: Add the certificate to your trust store
+  ansible.builtin.command:
+    cmd: update-ca-certificates

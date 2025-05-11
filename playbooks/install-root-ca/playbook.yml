@@ -1,0 +1,5 @@
+- name: Install CA
+  become: true
+  hosts: all
+  roles:
+    - install_ca
