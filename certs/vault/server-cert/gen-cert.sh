@@ -15,7 +15,7 @@ openssl req \
 openssl x509 \
     -req \
     -sha512 \
-    -days 3650 \
+    -days 365 \
     -in VAULT-SERVER-CSR.pem \
     -out VAULT-SERVER.pem \
     -CA "../ca/VAULT-INT-CA.pem" \
