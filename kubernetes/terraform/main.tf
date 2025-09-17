@@ -100,7 +100,7 @@ resource "proxmox_virtual_environment_vm" "control_ubuntu_vm" {
     type  = "x86-64-v3"
   }
   memory {
-    dedicated = 2048
+    dedicated = 4096
   }
 }
 

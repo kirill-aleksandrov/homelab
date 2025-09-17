@@ -178,7 +178,7 @@ resource "helm_release" "external_dns" {
         "--rfc2136-host=172.16.0.2",
         "--rfc2136-port=53",
         "--rfc2136-zone=homelab",
-        "--rfc2136-tsig-axfr"
+        # "--rfc2136-tsig-axfr"
       ]
     }
   ]
