@@ -7,7 +7,7 @@
   ansible.builtin.template:
     src: named.conf.j2
     dest: /etc/bind/named.conf
-    mode: '644'
+    mode: "644"
 
 - name: Check that the zone tsig key exists
   ansible.builtin.stat:
@@ -24,7 +24,7 @@
   ansible.builtin.copy:
     content: "{{ tsig_key.stdout }}\n"
     dest: /etc/bind/{{ zone }}-tsig.conf.key
-    mode: '600'
+    mode: "600"
     owner: named
     group: named
   when: tsig_key is not ansible.builtin.skipped
@@ -33,7 +33,15 @@
   ansible.builtin.template:
     src: zone.j2
     dest: /var/bind/dyn/{{ zone }}.zone
-    mode: '644'
+    mode: "644"
+
+- name: Create log file
+  ansible.builtin.file:
+    path: /var/log/named.log
+    state: touch
+    owner: named
+    group: named
+    mode: "640"
 
 - name: Enable and restart the service
   ansible.builtin.service:
