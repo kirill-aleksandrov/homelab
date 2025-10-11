@@ -2,7 +2,7 @@ resource "proxmox_virtual_environment_file" "ubuntu_cloud_config" {
   count = 3
 
   content_type = "snippets"
-  datastore_id = "local"
+  datastore_id = var.vm_snippet_datastore_id
   node_name    = var.vm_nodes[count.index]
 
   source_raw {
@@ -40,7 +40,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 
   disk {
-    datastore_id = "local-lvm"
+    datastore_id = var.vm_datastore_id
     file_id      = proxmox_virtual_environment_download_file.vault_ubuntu_image[count.index].id
     interface    = "virtio0"
     size         = 20
@@ -75,7 +75,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   bios    = "ovmf"
 
   efi_disk {
-    datastore_id = "local-lvm"
+    datastore_id = var.vm_datastore_id
     file_format  = "raw"
   }
 

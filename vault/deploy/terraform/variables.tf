@@ -63,13 +63,16 @@ variable "vm_start_id" {
 }
 
 variable "vm_datastore_id" {
-  type = string
+  type    = string
+  default = "local-lvm"
 }
 
 variable "vm_image_datastore_id" {
-  type = string
+  type    = string
+  default = "local"
 }
 
-variable "vm_cnippet_datastore_id" {
-  type = string
+variable "vm_snippet_datastore_id" {
+  type    = string
+  default = "local"
 }
