@@ -1,6 +1,7 @@
-ui           = true
-api_addr     = "https://{{ ansible_host }}:8200"
-cluster_addr = "https://{{ ansible_host }}:8201"
+ui            = true
+api_addr      = "https://{{ ansible_host }}:8200"
+cluster_addr  = "https://{{ ansible_host }}:8201"
+disable_mlock = false
 
 storage "raft" {
   path    = "/opt/vault/data"
