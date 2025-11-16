@@ -1,38 +1,7 @@
-locals {
-  name = "vault-secrets-operator"
-}
 
 resource "vault_auth_backend" "vault_auth_backend" {
   type = "kubernetes"
   path = local.name
-}
-
-resource "kubernetes_namespace" "namespace" {
-  metadata {
-    name = local.name
-  }
-}
-
-resource "helm_release" "operator" {
-  name       = local.name
-  repository = "https://helm.releases.hashicorp.com"
-  chart      = local.name
-  version    = "0.10.0"
-  namespace  = kubernetes_namespace.namespace.metadata[0].name
-
-  set = [
-    {
-      name  = "controller.securityContext.seccompProfile.type"
-      value = "RuntimeDefault"
-    }
-  ]
-
-  set_list = [
-    {
-      name  = "controller.securityContext.capabilities.drop"
-      value = ["ALL"]
-    }
-  ]
 }
 
 resource "kubernetes_service_account" "token_reviewer_service_account" {
