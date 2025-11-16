@@ -116,7 +116,7 @@ resource "helm_release" "external_dns" {
   name       = local.chart_name
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = local.chart_name
-  version    = "1.16.1"
+  version    = "1.19.0"
   namespace  = kubernetes_namespace.external_dns.metadata[0].name
 
   # Pod will not be ready until correct secret is set to vault
@@ -178,7 +178,7 @@ resource "helm_release" "external_dns" {
         "--rfc2136-host=172.16.0.2",
         "--rfc2136-port=53",
         "--rfc2136-zone=homelab",
-        "--rfc2136-tsig-axfr"
+        # "--rfc2136-tsig-axfr"
       ]
     }
   ]
