@@ -14,5 +14,5 @@ packages:
 runcmd:
   - systemctl enable --now qemu-guest-agent
 %{ if create_vg ~}
-  - vgcreate openebs-lvm /dev/vdb
+  - vgcreate kubernetes /dev/vdb
 %{ endif ~}

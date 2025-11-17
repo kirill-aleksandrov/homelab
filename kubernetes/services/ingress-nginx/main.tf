@@ -8,7 +8,7 @@ resource "kubernetes_namespace" "ingress_nginx" {
   }
 }
 
-resource "helm_release" "external_dns" {
+resource "helm_release" "ingress_nginx" {
   name       = local.chart_name
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = local.chart_name
