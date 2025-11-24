@@ -1,9 +1,3 @@
-resource "kubernetes_namespace" "namespace" {
-  metadata {
-    name = local.name
-  }
-}
-
 resource "helm_release" "operator" {
   name       = local.name
   repository = "oci://quay.io/jetstack/charts"
