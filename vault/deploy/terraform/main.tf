@@ -44,7 +44,6 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
     file_id      = proxmox_virtual_environment_download_file.vault_ubuntu_image[count.index].id
     interface    = "virtio0"
     size         = 20
-    ssd          = true
     discard      = "on"
   }
 
