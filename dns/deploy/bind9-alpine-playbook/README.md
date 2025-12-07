@@ -2,8 +2,8 @@
 
 Ansible playbook to install bind9 in on alpine
 
-Alpine comes with `doas` instead of `sudo`
+```
+ansible-playbook -i $INVENTORY ./playbook.yml
+```
 
-```
-ansible-playbook -i $INVENTORY --become --become-method=doas ./playbook.yml
-```
+The generated TSIG is stored in `/etc/bind/{{ zone }}-tsig.conf.key`

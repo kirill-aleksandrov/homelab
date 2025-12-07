@@ -75,6 +75,12 @@ resource "proxmox_virtual_environment_vm" "vm" {
     type  = "x86-64-v3"
   }
   memory {
+    # Enough memory for cloud-init to finish
     dedicated = 192
+  }
+
+  startup {
+    order    = 0
+    up_delay = 30
   }
 }

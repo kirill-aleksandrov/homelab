@@ -1,4 +1,6 @@
 - name: Setup bind9
+  become: true
+  become_method: doas
   hosts: all
   roles:
     - bind
