@@ -5,3 +5,5 @@
 .terraform/
 terraform.tfstate*
 *.tfvars
+
+.terragrunt-cache
