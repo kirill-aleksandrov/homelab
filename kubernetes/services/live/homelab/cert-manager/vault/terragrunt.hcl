@@ -5,6 +5,11 @@ include "root" {
 
 terraform {
   source = "../../../../modules/services/cert-manager/vault"
+
+  after_hook "configure_vault_auth" {
+    commands     = ["apply"]
+    execute      = ["./configure-vault-auth.sh"]
+  }
 }
 
 dependency "operator" {

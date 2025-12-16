@@ -1,4 +1,4 @@
-resource "vault_auth_backend" "cert_manager" {
+resource "vault_auth_backend" "vault_auth_backend" {
   type = "kubernetes"
   path = "cert-manager"
 }
