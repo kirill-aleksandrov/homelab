@@ -9,9 +9,6 @@ resource "helm_release" "external_dns" {
   version    = "1.19.0"
   namespace  = var.namespace
 
-  # Pod will not be ready until correct secret is set to vault
-  wait = false
-
   values = [
     yamlencode({
       env = [
