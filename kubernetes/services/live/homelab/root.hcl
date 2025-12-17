@@ -3,6 +3,7 @@ locals {
   vault_tsig_read_policy_name = "homelab-bind9-rfc2136-tsig-read"
   vault_tsig_mount_path       = "homelab-bind9"
   vault_tsig_secret_name      = "rfc2136-tsig"
+  vault_int_ca_backend_path   = "homelab-int-ca"
 }
 
 generate "providers" {

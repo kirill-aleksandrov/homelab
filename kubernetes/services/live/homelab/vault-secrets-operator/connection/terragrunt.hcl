@@ -7,8 +7,8 @@ terraform {
   source = "../../../../modules/services/vault-secrets-operator/connection"
 
   after_hook "configure_vault_auth" {
-    commands     = ["apply"]
-    execute      = ["./configure-vault-auth.sh"]
+    commands = ["apply"]
+    execute  = ["./configure-vault-auth.sh"]
   }
 }
 

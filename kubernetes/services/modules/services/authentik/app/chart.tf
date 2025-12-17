@@ -9,7 +9,7 @@ locals {
     {
       name = "secret-key",
       secret = {
-        secretName = "${local.chart_name}-secret-key"
+        secretName = kubernetes_manifest.secret_key.manifest.spec.destination.name
       }
     }
   ]
@@ -45,11 +45,11 @@ locals {
 resource "helm_release" "authentik" {
   depends_on = [kubernetes_manifest.postgres]
 
-  name       = local.chart_name
+  name       = "authentik"
   repository = "https://charts.goauthentik.io"
-  chart      = local.chart_name
+  chart      = "authentik"
   version    = "2025.10.2"
-  namespace  = kubernetes_namespace.authentik.metadata[0].name
+  namespace  = var.namespace
 
   values = [
     yamlencode({

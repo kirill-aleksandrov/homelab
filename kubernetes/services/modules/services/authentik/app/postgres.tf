@@ -4,7 +4,7 @@ resource "kubernetes_manifest" "postgres" {
     "kind"       = "Cluster"
     "metadata" = {
       "name"      = "postgres"
-      "namespace" = kubernetes_namespace.authentik.metadata[0].name
+      "namespace" = var.namespace
     }
     "spec" = {
       "bootstrap" = {
