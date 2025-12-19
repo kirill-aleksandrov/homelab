@@ -1,5 +1,6 @@
 locals {
   root_ca                     = jsondecode(run_cmd("--terragrunt-quiet", "curl", "-s", "${get_env("VAULT_ADDR")}/v1/homelab-root-ca/cert/ca_chain")).data.certificate
+  vault_address               = get_env("VAULT_ADDR")
   vault_tsig_read_policy_name = "homelab-bind9-rfc2136-tsig-read"
   vault_tsig_mount_path       = "homelab-bind9"
   vault_tsig_secret_name      = "rfc2136-tsig"
