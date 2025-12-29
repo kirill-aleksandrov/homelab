@@ -6,7 +6,6 @@ output "global_auth_name" {
   value = kubernetes_manifest.global_auth.manifest.metadata.name
 }
 
-# outputs used by after_hook
 output "vault_auth_backend_path" {
   value = vault_auth_backend.vault_auth_backend.path
 }

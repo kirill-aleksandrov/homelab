@@ -6,6 +6,10 @@ variable "root_ca" {
   type = string
 }
 
+variable "vault_address" {
+  type = string
+}
+
 variable "vault_secret_key_mount_path" {
   type = string
 }

@@ -69,7 +69,7 @@ resource "helm_release" "authentik" {
             "authentik.homelab"
           ]
           annotations = {
-            "cert-manager.io/issuer"                = kubernetes_manifest.vault_issuer.manifest.metadata.name
+            "cert-manager.io/issuer"                = module.issuer.issuer_name
             "cert-manager.io/private-key-algorithm" = "ECDSA"
             "cert-manager.io/private-key-size"      = "384"
           }
