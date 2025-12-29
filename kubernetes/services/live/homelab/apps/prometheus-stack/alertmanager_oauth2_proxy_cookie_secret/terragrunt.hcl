@@ -23,5 +23,5 @@ dependency "vault" {
 }
 
 inputs = {
-  vault_mount_path = dependency.vault.outputs.vault_prometheus_mount_path
+  vault_mount_path = dependency.vault.outputs.vault_alertmanager_mount_path
 }

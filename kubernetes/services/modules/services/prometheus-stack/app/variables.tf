@@ -61,6 +61,26 @@ variable "vault_alertmanager_mount_path" {
   type = string
 }
 
+variable "oauth2_alertmanager_application_slug" {
+  type = string
+}
+
+variable "vault_alertmanager_client_secret_secret_name" {
+  type = string
+}
+
+variable "vault_alertmanager_client_secret_read_policy_name" {
+  type = string
+}
+
+variable "vault_alertmanager_cookie_secret_secret_name" {
+  type = string
+}
+
+variable "vault_alertmanager_cookie_secret_read_policy_name" {
+  type = string
+}
+
 # Grafana oauth2
 variable "vault_grafana_mount_path" {
   type = string

@@ -25,7 +25,7 @@ dependency "vault" {
 inputs = {
   authentik_url        = include.root.locals.authentik_url
   authentik_token      = include.root.locals.authentik_token
-  name                 = "prometheus"
-  allowed_redirect_uri = "https://prometheus.homelab/oauth2/callback"
-  vault_mount_path     = dependency.vault.outputs.vault_prometheus_mount_path
+  name                 = "alertmanager"
+  allowed_redirect_uri = "https://alertmanager.homelab/oauth2/callback"
+  vault_mount_path     = dependency.vault.outputs.vault_alertmanager_mount_path
 }
