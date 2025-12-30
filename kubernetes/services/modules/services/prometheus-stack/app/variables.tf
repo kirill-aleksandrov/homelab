@@ -85,3 +85,15 @@ variable "vault_alertmanager_cookie_secret_read_policy_name" {
 variable "vault_grafana_mount_path" {
   type = string
 }
+
+variable "oauth2_grafana_application_slug" {
+  type = string
+}
+
+variable "vault_grafana_client_secret_secret_name" {
+  type = string
+}
+
+variable "vault_grafana_client_secret_read_policy_name" {
+  type = string
+}

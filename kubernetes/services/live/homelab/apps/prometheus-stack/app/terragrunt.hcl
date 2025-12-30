@@ -74,6 +74,16 @@ dependency "alertmanager_oauth2_proxy_cookie_secret" {
   }
 }
 
+dependency "grafana_oauth2_provider" {
+  config_path = "../grafana_oauth2_provider"
+
+  mock_outputs = {
+    oauth2_application_slug              = "grafana"
+    vault_client_secret_secret_name      = "oauth2-provider"
+    vault_client_secret_read_policy_name = "grafana-oauth2-provider-read"
+  }
+}
+
 inputs = {
   authentik_url             = include.root.locals.authentik_url
   authentik_token           = include.root.locals.authentik_token
@@ -99,5 +109,8 @@ inputs = {
   vault_alertmanager_cookie_secret_secret_name      = dependency.alertmanager_oauth2_proxy_cookie_secret.outputs.vault_cookie_secret_secret_name
   vault_alertmanager_cookie_secret_read_policy_name = dependency.alertmanager_oauth2_proxy_cookie_secret.outputs.vault_cookie_secret_read_policy_name
 
-  vault_grafana_mount_path = dependency.vault.outputs.vault_grafana_mount_path
+  vault_grafana_mount_path                     = dependency.vault.outputs.vault_grafana_mount_path
+  oauth2_grafana_application_slug              = dependency.grafana_oauth2_provider.outputs.oauth2_application_slug
+  vault_grafana_client_secret_secret_name      = dependency.grafana_oauth2_provider.outputs.vault_client_secret_secret_name
+  vault_grafana_client_secret_read_policy_name = dependency.grafana_oauth2_provider.outputs.vault_client_secret_read_policy_name
 }
