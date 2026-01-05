@@ -11,6 +11,9 @@ resource "helm_release" "prometheus_stack" {
         namespaceOverride = kubernetes_namespace.node_exporter_namespace.metadata[0].name
       }
       prometheus = {
+        prometheusSpec = {
+          externalUrl = "https://prometheus.homelab"
+        }
         ingress = {
           enabled = false
         }
