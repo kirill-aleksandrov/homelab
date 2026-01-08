@@ -26,6 +26,7 @@ resource "helm_release" "prometheus_oauth2_proxy" {
 
       extraArgs = {
         provider            = "oidc"
+        allowed-group       = authentik_group.prometheus.name
         oidc-issuer-url     = "${var.authentik_url}/application/o/${var.oauth2_prometheus_application_slug}/"
         email-domain        = "*"
         upstream            = "http://kube-prometheus-stack-prometheus:9090"
@@ -120,6 +121,7 @@ resource "helm_release" "alertmanager_oauth2_proxy" {
 
       extraArgs = {
         provider            = "oidc"
+        allowed-group       = authentik_group.alertmanager.name
         oidc-issuer-url     = "${var.authentik_url}/application/o/${var.oauth2_alertmanager_application_slug}/"
         email-domain        = "*"
         upstream            = "http://kube-prometheus-stack-alertmanager:9093"

@@ -47,6 +47,10 @@ resource "helm_release" "prometheus_stack" {
           }
           auth = {
             signout_redirect_url = "https://authentik.homelab/application/o/${var.oauth2_grafana_application_slug}/end-session/"
+            disable_login_form   = true
+          }
+          "auth.basic" = {
+            enabled = false
           }
           "auth.generic_oauth" = {
             name          = "authentik"
@@ -58,7 +62,15 @@ resource "helm_release" "prometheus_stack" {
             auth_url      = "https://authentik.homelab/application/o/authorize/"
             token_url     = "https://authentik.homelab/application/o/token/"
             api_url       = "https://authentik.homelab/application/o/userinfo/"
-            # role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
+            role_attribute_path = join(
+              " || ",
+              [
+                "contains(groups, '${authentik_group.grafana_admins.name}') && 'Admin'",
+                "contains(groups, '${authentik_group.grafana_editors.name}') && 'Editor'",
+                "contains(groups, '${authentik_group.grafana_viewers.name}') && 'Viewer'",
+                "'None'"
+              ]
+            )
           }
         }
         ingress = {
