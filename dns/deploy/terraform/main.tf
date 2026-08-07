@@ -12,7 +12,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   }
 }
 
-resource "proxmox_virtual_environment_download_file" "image" {
+resource "proxmox_download_file" "image" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = "node1"
@@ -33,7 +33,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.image.id
+    file_id      = proxmox_download_file.image.id
     interface    = "virtio0"
     size         = 2
     discard      = "on"
