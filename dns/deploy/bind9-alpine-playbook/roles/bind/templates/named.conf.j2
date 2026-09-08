@@ -17,7 +17,7 @@ options {
 
 	listen-on {
 		127.0.0.1;
-		{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }};
+		{{ hostvars[inventory_hostname]['ansible_facts']['default_ipv4']['address'] }};
 	};
 	listen-on-v6 { none; };
 

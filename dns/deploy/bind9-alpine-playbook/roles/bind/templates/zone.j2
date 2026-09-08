@@ -8,4 +8,4 @@ $TTL 1H
 
                 NS      ns
 
-ns              A       {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+ns              A       {{ hostvars[inventory_hostname]['ansible_facts']['default_ipv4']['address'] }}
