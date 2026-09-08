@@ -1,6 +1,6 @@
 ui            = true
-api_addr      = "https://{{ ansible_host }}:8200"
-cluster_addr  = "https://{{ ansible_host }}:8201"
+api_addr      = "https://{{ hostvars[inventory_hostname]['ansible_host'] }}:8200"
+cluster_addr  = "https://{{ hostvars[inventory_hostname]['ansible_host'] }}:8201"
 disable_mlock = false
 
 storage "raft" {
@@ -8,7 +8,7 @@ storage "raft" {
 {% if raft_node_id is defined %}
   node_id = "{{ raft_node_id }}"
 {% endif %}
-{% for host in groups['vault'] if host != inventory_hostname %}
+{% for host in groups['vault'] %}
 
   retry_join {
     leader_api_addr         = "https://{{ hostvars[host]['ansible_host'] }}:8200"
@@ -20,8 +20,8 @@ storage "raft" {
 }
 
 listener "tcp" {
-  address            = "{{ ansible_host }}:8200"
-  cluster_address    = "{{ ansible_host }}:8201"
+  address            = "0.0.0.0:8200"
+  cluster_address    = "0.0.0.0:8201"
   tls_cert_file      = "/opt/vault/tls/tls.crt"
   tls_key_file       = "/opt/vault/tls/tls.key"
   tls_client_ca_file = "/opt/vault/tls/ca.crt"
